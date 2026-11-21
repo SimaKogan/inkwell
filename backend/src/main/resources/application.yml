@@ -1,0 +1,57 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: inkwell
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/inkwell}
+    username: ${SPRING_DATASOURCE_USERNAME:inkwell}
+    password: ${SPRING_DATASOURCE_PASSWORD:inkwell}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      max-file-size: 12MB
+      max-request-size: 40MB
+  jackson:
+    default-property-inclusion: non_null
+  mvc:
+    problemdetails:
+      enabled: true
+
+inkwell:
+  jwt:
+    secret: ${INKWELL_JWT_SECRET:change-me-change-me-change-me-change-me-please}
+    access-ttl: 15m
+    refresh-ttl: 14d
+  ml:
+    base-url: ${INKWELL_ML_BASE_URL:http://localhost:8000}
+    timeout: 90s
+  cors:
+    allowed-origins: ${INKWELL_CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+  seed:
+    enabled: ${INKWELL_SEED:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs

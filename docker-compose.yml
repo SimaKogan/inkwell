@@ -1,0 +1,51 @@
+name: inkwell
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: inkwell
+      POSTGRES_USER: inkwell
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-inkwell}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inkwell -d inkwell"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  ml:
+    build: ./ml-service
+    environment:
+      # Optional. Without a key: Tesseract OCR for recognition, no "Ask AI". Embeddings and handwriting generation work either way.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5-5}
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+      ml:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/inkwell
+      SPRING_DATASOURCE_USERNAME: inkwell
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-inkwell}
+      INKWELL_JWT_SECRET: ${INKWELL_JWT_SECRET:?Copy .env.example to .env and set INKWELL_JWT_SECRET}
+      INKWELL_ML_BASE_URL: http://ml:8000
+      INKWELL_SEED: ${INKWELL_SEED:-true}
+      INKWELL_CORS_ORIGINS: http://localhost:3000
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  pgdata:
