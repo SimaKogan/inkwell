@@ -53,14 +53,31 @@ The first build downloads the embedding model into the ML image (~250 MB), so al
 Set `ANTHROPIC_API_KEY` in `.env` to enable Claude-based handwriting recognition and the "Ask AI" panel.
 Without it, recognition falls back to Tesseract and everything else keeps working.
 
-### Develop without Docker for the app
+### Run locally without Docker
+
+You need Java 17, Maven, Node 18+ and a PostgreSQL 14+ server with two extensions: **pgvector** and **pg_trgm** (bundled with PostgreSQL).
+The database must use a **UTF-8 locale, not `C`**: with `C`, PostgreSQL does not lower-case Cyrillic in full-text indexes, so searching for a Russian word misses results
+(the backend logs a warning at startup if it detects this).
+
+```sql
+CREATE ROLE inkwell LOGIN PASSWORD 'inkwell';
+CREATE DATABASE inkwell OWNER inkwell TEMPLATE template0 ENCODING 'UTF8' LC_COLLATE 'en_US.UTF-8' LC_CTYPE 'en_US.UTF-8';
+\c inkwell
+CREATE EXTENSION vector;   -- run as a superuser; Flyway then finds it already installed
+CREATE EXTENSION pg_trgm;
+```
+
+On macOS, `brew install postgresql@17 pgvector` covers all of it. With the EDB installer, pgvector has to be built against its `pg_config`.
+`make db` starts a ready-made database in Docker if you prefer.
 
 ```bash
-make db                                        # PostgreSQL + pgvector only
-cd backend && mvn spring-boot:run              # http://localhost:8080
-cd ml-service && pip install -r requirements.txt && uvicorn app.main:app --port 8000
-cd frontend && npm install && npm run dev      # http://localhost:5173, proxies /api to :8080
+cd backend && INKWELL_SEED=true mvn spring-boot:run          # http://localhost:8080, demo / demo12345
+cd frontend && npm install && npm run dev                     # http://localhost:5173, proxies /api to :8080
+cd ml-service && pip install -r requirements.txt && uvicorn app.main:app --port 8000   # optional
 ```
+
+Without the ML service the catalog, discussions and text search (including keyboard-layout repair) work; semantic search, "Ask AI"
+and the handwriting studio need it. Rows saved while it was down are embedded automatically once it is back.
 
 ## Architecture
 
