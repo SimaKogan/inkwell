@@ -25,10 +25,11 @@ export default function SearchPage() {
   const { user } = useAuth()
   const [params] = useSearchParams()
   const query = params.get('q')?.trim() ?? ''
+  const exact = params.get('exact') === '1'
 
   const results = useQuery({
-    queryKey: ['search', query],
-    queryFn: () => api.get<SearchResponse>(`/search${qs({ q: query, limit: 20 })}`),
+    queryKey: ['search', query, exact],
+    queryFn: () => api.get<SearchResponse>(`/search${qs({ q: query, limit: 20, exact: exact ? 'true' : undefined })}`),
     enabled: query.length > 0,
   })
   const ask = useMutation({
@@ -46,7 +47,7 @@ export default function SearchPage() {
           {results.data.layoutCorrected && (
             <p className="notice info">
               {t('search.corrected', { q: results.data.effectiveQuery })}{' '}
-              <Link to={`/search?q=${encodeURIComponent(query + ' ')}`}>{t('search.original', { q: query })}</Link>
+              <Link to={`/search?q=${encodeURIComponent(query)}&exact=1`}>{t('search.original', { q: query })}</Link>
             </p>
           )}
           <p className="muted small">{results.data.semantic ? t('search.semantic') : t('search.textOnly')}</p>

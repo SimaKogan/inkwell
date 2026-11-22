@@ -1,5 +1,7 @@
 # Inkwell
 
+![Inkwell: a catalog people talk about](docs/social-preview.png)
+
 A catalog with a conversation attached, plus a handwriting studio.
 
 Browse a catalog, find things by *meaning* rather than exact words, discuss them in posts and threaded comments,
@@ -13,6 +15,30 @@ The interface speaks Russian, English and Hebrew (full RTL).
 | **Frontend** | React 18, TypeScript, Vite, TanStack Query, React Router |
 | **ML sidecar** | Python 3.12, FastAPI, OpenCV, Pillow, fastembed (multilingual embeddings), Claude vision (optional) |
 | **Ops** | Docker Compose, GitHub Actions |
+
+## Screenshots
+
+*The real frontend running against demo data.*
+
+**Search that survives a wrong keyboard layout.** `vfcnth` was typed on the English layout; the engine finds that it means `мастер`, says so,
+and offers to search the text as typed. "Ask AI" answers only from the hits, with numbered citations.
+
+![Search with keyboard-layout repair and an AI answer](docs/images/search.png)
+
+**Handwriting studio.** Print a sheet, photograph it, and write new text in your own letters. Hebrew paragraphs run right-to-left.
+
+![Handwriting studio](docs/images/studio.png)
+
+**Catalog** with filters, sorting and a coloured binding per category · **threaded discussion** under a post:
+
+![Catalog](docs/images/catalog.png)
+![Post with threaded comments](docs/images/discussion.png)
+
+**Three languages, full RTL, light and dark.** The layout mirrors for Hebrew (navigation, bindings, margin line) and each post picks its own text direction.
+
+| Hebrew (RTL) | Dark theme |
+|---|---|
+| ![Hebrew interface](docs/images/hebrew-rtl.png) | ![Dark theme](docs/images/dark.png) |
 
 ## Run it
 
@@ -65,7 +91,7 @@ If it is down, the catalog, posts and text search keep working.
 3. `pgvector` cosine distance over 384-d multilingual embeddings (a query in Russian finds an English book)
 
 **Keyboard-layout repair.** If a query finds nothing as typed but its repaired form does, the repaired form is used and the UI
-says so: `ghbdtn` → `привет`, `akuo` → `שלום`, and the reverse directions. It is data-driven (it checks the index) rather than
+says so (with a "search as typed" link that sets `exact=true`): `ghbdtn` → `привет`, `akuo` → `שלום`, and the reverse directions. It is data-driven (it checks the index) rather than
 guessing the language, so `dog` stays `dog`. The Hebrew table is ported from the JibToHeb MCP server; Russian ЙЦУКЕН was added.
 
 **Ask AI.** `POST /api/search/ask` retrieves the top hits and asks Claude to answer *only* from them, with numbered citations.
@@ -80,6 +106,11 @@ Upload a photo. With an API key, a vision model transcribes it (Hebrew, Russian 
 otherwise Tesseract (`heb+rus+eng`) is used. The text can be published as a post, flagged as handwritten.
 
 ### Generation in your own hand
+
+![Print the sheet, photograph it, write anything](docs/images/handwriting-pipeline.png)
+
+*The demo "handwriting" in these images comes from handwriting fonts standing in for a person; the sheet, photo correction, extraction and rendering are the real pipeline.*
+
 No model is trained and nothing is guessed from other people's writing; the output is assembled from *your* letters.
 
 1. **Print a sheet** (`/api/handwriting/template`). Each A4 sheet has a grid with one cell per character, a baseline guide,

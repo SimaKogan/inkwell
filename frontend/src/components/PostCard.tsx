@@ -34,8 +34,8 @@ export default function PostCard({ post, full = false }: { post: Post; full?: bo
         </div>
         {post.source === 'HANDWRITTEN' && <span className="chip hand">{t('post.handwritten')}</span>}
       </header>
-      {post.title && <h3 className="post-title">{full ? post.title : <Link to={`/posts/${post.id}`}>{post.title}</Link>}</h3>}
-      <p className="post-body">{full || post.body.length < 420 ? post.body : post.body.slice(0, 420) + '…'}</p>
+      {post.title && <h3 className="post-title" dir="auto">{full ? post.title : <Link to={`/posts/${post.id}`}>{post.title}</Link>}</h3>}
+      <p className="post-body" dir="auto">{full || post.body.length < 420 ? post.body : post.body.slice(0, 420) + '…'}</p>
       {post.item && <Link to={`/catalog/${post.item.id}`} className="chip">{t('post.about')}: {post.item.title}</Link>}
       <footer className="post-actions">
         <button className={`act${post.likedByMe ? ' on' : ''}`} aria-pressed={post.likedByMe}

@@ -38,13 +38,16 @@ public class SearchService {
         this.ml = ml;
     }
 
-    public SearchResponse search(String raw, String type, int limit) {
+    public SearchResponse search(String raw, String type, int limit) { return search(raw, type, limit, false); }
+
+    /** exact = true searches the text as typed, skipping the keyboard-layout repair. */
+    public SearchResponse search(String raw, String type, int limit, boolean exact) {
         String q = raw == null ? "" : raw.trim();
         if (q.length() > 200) q = q.substring(0, 200);
         int max = Math.max(1, Math.min(limit, 30));
         if (q.isEmpty()) return new SearchResponse(q, q, false, "unknown", false, List.of());
 
-        String effective = chooseQuery(q);
+        String effective = exact ? q : chooseQuery(q);
         Optional<float[]> vec = ml.embed(effective);
         List<SearchHit> hits = new ArrayList<>();
         for (Source s : Source.values()) {

@@ -22,8 +22,9 @@ public class SearchController {
     @GetMapping
     public SearchResponse search(@RequestParam String q,
                                  @RequestParam(required = false) String type,
-                                 @RequestParam(defaultValue = "12") int limit) {
-        return search.search(q, type, limit);
+                                 @RequestParam(defaultValue = "12") int limit,
+                                 @RequestParam(defaultValue = "false") boolean exact) {
+        return search.search(q, type, limit, exact);
     }
 
     /** Grounded answer over the top hits (requires a signed-in user: it costs LLM tokens). */

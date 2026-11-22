@@ -61,7 +61,7 @@ function CommentNode({ node, postId, depth }: { node: Node; postId: number; dept
         <Link to={`/u/${node.author.username}`} className="author">{node.author.displayName}</Link>
         <time className="muted" dateTime={node.createdAt}>{fmt.date(node.createdAt)}</time>
       </div>
-      <p className="comment-body">{node.body}</p>
+      <p className="comment-body" dir="auto">{node.body}</p>
       <div className="comment-actions">
         {user && <button className="link" onClick={() => setReplying((v) => !v)}>{t('comments.reply')}</button>}
         {user && (user.id === node.author.id || user.role === 'ADMIN') && (

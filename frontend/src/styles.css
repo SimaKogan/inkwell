@@ -67,7 +67,7 @@ a:hover { text-decoration-thickness: 2px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .link { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .link.danger { color: var(--danger); }
-.input, .textarea, .select { inline-size: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; }
+.input, .textarea, .select { inline-size: 100%; font: inherit; font-weight: 400; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; }
 .textarea { resize: vertical; line-height: 1.5; } .textarea.tall { min-block-size: 220px; }
 .input:focus, .textarea:focus, .select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent); border-color: var(--accent); }
 .input.big { padding: 14px 18px; font-size: 1.1rem; border-radius: 10px; }
