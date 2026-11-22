@@ -12,7 +12,7 @@ export default function Home() {
   const { t } = useI18n()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
-  const items = useQuery({ queryKey: ['catalog', 'latest'], queryFn: () => api.get<PageResult<Item>>('/catalog?size=6') })
+  const items = useQuery({ queryKey: ['catalog', 'latest'], queryFn: () => api.get<PageResult<Item>>('/catalog?size=8') })
   const posts = useQuery({ queryKey: ['posts', 'latest'], queryFn: () => api.get<PageResult<Post>>('/posts?size=3') })
 
   const submit = (e: FormEvent) => {
