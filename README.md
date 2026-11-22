@@ -10,7 +10,7 @@ The interface speaks Russian, English and Hebrew (full RTL).
 
 | | |
 |---|---|
-| **Backend** | Java 21, Spring Boot 3.3, Spring Security + JWT, Spring Data JPA, Flyway, OpenAPI |
+| **Backend** | Java 17, Spring Boot 3.3, Spring Security + JWT, Spring Data JPA, Flyway, OpenAPI |
 | **Database** | PostgreSQL 16 with `pgvector` (semantic search), `pg_trgm` and full-text search |
 | **Frontend** | React 18, TypeScript, Vite, TanStack Query, React Router |
 | **ML sidecar** | Python 3.12, FastAPI, OpenCV, Pillow, fastembed (multilingual embeddings), Claude vision (optional) |
